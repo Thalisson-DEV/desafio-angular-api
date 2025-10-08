@@ -4,6 +4,7 @@ import com.rocketseat.desafioangularapi.dtos.ProductDTO;
 import com.rocketseat.desafioangularapi.dtos.ProductRequestDTO;
 import com.rocketseat.desafioangularapi.dtos.ProductsResponseDTO;
 import com.rocketseat.desafioangularapi.entitys.Products;
+import com.rocketseat.desafioangularapi.exceptions.NoProductsFoundException;
 import com.rocketseat.desafioangularapi.exceptions.ProductNotFoundException;
 import com.rocketseat.desafioangularapi.mappers.ProductMapper;
 import com.rocketseat.desafioangularapi.repositories.ProductsRepository;
@@ -24,15 +25,19 @@ public class ProductsService {
 
     @Transactional
     public ProductDTO saveProduct(ProductRequestDTO productDTO) {
-        Products productToSave = productMapper.toProductsEntity(productDTO);
+        Products productToSave = productMapper.toProductSavedEntity(productDTO);
 
         Products savedProduct = productsRepository.save(productToSave);
 
-        return  productMapper.toProductDTO(savedProduct);
+        return productMapper.toProductDTO(savedProduct);
     }
 
     public ProductsResponseDTO findAllProducts() {
         List<Products> products = productsRepository.findAll();
+
+        if (products.isEmpty()) {
+            throw new NoProductsFoundException("Nenhum produto encontrado, verifique a base de dados.");
+        }
 
         List<ProductDTO> productDTOs = products.stream()
                 .map(productMapper::toProductDTO)
@@ -53,11 +58,10 @@ public class ProductsService {
 
     @Transactional
     public ProductDTO updateProduct(Long id, ProductRequestDTO productDTO) {
-        if (!productsRepository.existsById(id)) {
-            throw new ProductNotFoundException("Produto não encontrado com o Id" + id);
-        }
+        Products product = productsRepository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException("Produto não encontrado com o Id" + id));
 
-        Products productToUpdate = productMapper.toProductsEntity(productDTO);
+        Products productToUpdate = productMapper.toProductUpdatedEntity(product, productDTO);
 
         Products updatedProduct = productsRepository.save(productToUpdate);
 

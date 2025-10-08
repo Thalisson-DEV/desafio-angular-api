@@ -24,7 +24,7 @@ public class ProductMapper {
         );
     }
 
-    public Products toProductsEntity(ProductRequestDTO dto) {
+    public Products toProductSavedEntity(ProductRequestDTO dto) {
         if (dto == null) {
             return null;
         }
@@ -39,5 +39,20 @@ public class ProductMapper {
         products.setStatus(ProductStatus.ANUNCIADO);
 
         return products;
+    }
+
+    public Products toProductUpdatedEntity(Products product, ProductRequestDTO dto) {
+        if (dto == null) {
+            return null;
+        }
+
+        product.setTitle(dto.title());
+        product.setPrice(dto.price());
+        product.setDescription(dto.description());
+        product.setCategory(dto.category());
+        product.setImageBase64(dto.imageBase64());
+        product.setStatus(dto.status());
+
+        return product;
     }
 }

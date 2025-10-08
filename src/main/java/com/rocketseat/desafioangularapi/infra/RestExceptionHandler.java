@@ -1,8 +1,7 @@
 package com.rocketseat.desafioangularapi.infra;
 
-import com.rocketseat.desafioangularapi.exceptions.EmailAlreadyExistsException;
-import com.rocketseat.desafioangularapi.exceptions.ProductNotFoundException;
-import com.rocketseat.desafioangularapi.exceptions.TokenGenerationException;
+import com.rocketseat.desafioangularapi.exceptions.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
@@ -10,6 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
@@ -78,6 +78,34 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         RestExceptionMessage restExceptionMessage = new RestExceptionMessage(
                 "/erros/internal-authentication-error",
                 "Erro ao autenticar.",
+                status.value(),
+                exception.getMessage()
+        );
+
+        return new ResponseEntity<>(restExceptionMessage, status);
+    }
+
+    @ExceptionHandler(InvalidTokenException.class)
+    private ResponseEntity<RestExceptionMessage> tokenInvalid(InvalidTokenException exception) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+
+        RestExceptionMessage restExceptionMessage = new RestExceptionMessage(
+                "/erros/token-validation-failure",
+                "Token invalido.",
+                status.value(),
+                exception.getMessage()
+        );
+
+        return new ResponseEntity<>(restExceptionMessage, status);
+    }
+
+    @ExceptionHandler(NoProductsFoundException.class)
+    private ResponseEntity<RestExceptionMessage> noProductsFound(NoProductsFoundException exception) {
+        HttpStatus status = HttpStatus.NO_CONTENT;
+
+        RestExceptionMessage restExceptionMessage = new RestExceptionMessage(
+                "/erros/no-products-found",
+                "Nenhum produto encontrado.",
                 status.value(),
                 exception.getMessage()
         );

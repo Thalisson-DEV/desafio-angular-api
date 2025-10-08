@@ -23,5 +23,6 @@ public class Products {
     private String category;
     @Enumerated(EnumType.STRING)
     private ProductStatus status;
+    @Column(columnDefinition = "TEXT")
     private String imageBase64;
 }
