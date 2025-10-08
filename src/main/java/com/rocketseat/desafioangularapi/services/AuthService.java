@@ -102,8 +102,6 @@ public class AuthService {
         Integer iat = decodedJWT.getIssuedAt() != null ? (int) (decodedJWT.getIssuedAt().getTime() / 1000) : null;
         Integer exp = decodedJWT.getExpiresAt() != null ? (int) (decodedJWT.getExpiresAt().getTime() / 1000) : null;
 
-
-
         return new TokenValidationDTO(
                 "Acesso autorizado!",
                 userDTO,

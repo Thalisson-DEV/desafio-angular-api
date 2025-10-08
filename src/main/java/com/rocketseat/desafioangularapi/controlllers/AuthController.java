@@ -2,7 +2,6 @@ package com.rocketseat.desafioangularapi.controlllers;
 
 import com.rocketseat.desafioangularapi.dtos.*;
 import com.rocketseat.desafioangularapi.services.AuthService;
-import com.rocketseat.desafioangularapi.services.TokenService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,11 +38,6 @@ public class AuthController {
     @GetMapping("/protected")
     public ResponseEntity<TokenValidationDTO> validarToken(@RequestHeader("Authorization") String token) {
         TokenValidationDTO valido = authService.validateToken(token);
-
-        if (valido.equals("Token invalido")) {
-            return ResponseEntity.status(401).body(valido);
-        }
-
         return ResponseEntity.ok(valido);
     }
 }
