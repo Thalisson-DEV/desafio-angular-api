@@ -1,12 +1,8 @@
 package com.rocketseat.desafioangularapi.mappers;
 
-import com.rocketseat.desafioangularapi.dtos.ProductRequestDTO;
 import com.rocketseat.desafioangularapi.dtos.RegisterRequestDTO;
 import com.rocketseat.desafioangularapi.dtos.UserDTO;
-import com.rocketseat.desafioangularapi.entitys.ProductStatus;
-import com.rocketseat.desafioangularapi.entitys.Products;
 import com.rocketseat.desafioangularapi.entitys.Users;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -17,6 +13,7 @@ public class UserMapper {
         }
 
         return new UserDTO(
+                users.getId(),
                 users.getEmail()
         );
     }

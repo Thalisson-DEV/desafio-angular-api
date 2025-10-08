@@ -27,6 +27,7 @@ public class TokenService {
                     .withIssuer("API-Desafio-Angular")
                     .withSubject(user.getEmail())
                     .withExpiresAt(genExpirationDate())
+                    .withIssuedAt(Instant.now())
                     .sign(algorithm);
         } catch (JWTCreationException exception) {
             throw new TokenGenerationException("Erro durante a geração do token.");

@@ -1,16 +1,12 @@
 package com.rocketseat.desafioangularapi.controlllers;
 
-import com.rocketseat.desafioangularapi.dtos.AuthRequestDTO;
-import com.rocketseat.desafioangularapi.dtos.LoginSucessfullDTO;
-import com.rocketseat.desafioangularapi.dtos.RegisterRequestDTO;
+import com.rocketseat.desafioangularapi.dtos.*;
 import com.rocketseat.desafioangularapi.services.AuthService;
+import com.rocketseat.desafioangularapi.services.TokenService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/v1/auth")
@@ -32,5 +28,22 @@ public class AuthController {
     public ResponseEntity<String> register(@RequestBody @Valid RegisterRequestDTO registerRequest) {
         authService.register(registerRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body("Registro realizado com sucesso");
+    }
+
+    @PostMapping("/user/profile")
+    public ResponseEntity<UserProfileDTO> userProfile() {
+        UserProfileDTO userProfileDTO = authService.profile();
+        return ResponseEntity.ok(userProfileDTO);
+    }
+
+    @GetMapping("/protected")
+    public ResponseEntity<TokenValidationDTO> validarToken(@RequestHeader("Authorization") String token) {
+        TokenValidationDTO valido = authService.validateToken(token);
+
+        if (valido.equals("Token invalido")) {
+            return ResponseEntity.status(401).body(valido);
+        }
+
+        return ResponseEntity.ok(valido);
     }
 }
