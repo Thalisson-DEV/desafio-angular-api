@@ -9,6 +9,7 @@ import com.rocketseat.desafioangularapi.exceptions.InvalidTokenException;
 import com.rocketseat.desafioangularapi.mappers.UserMapper;
 import com.rocketseat.desafioangularapi.repositories.UsersRepository;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -41,7 +42,7 @@ public class AuthService {
                 authRequest.email(),
                 authRequest.password()
         );
-        var auth = this.authenticationManager.authenticate(usernamePassword);
+        var auth = authenticationManager.authenticate(usernamePassword);
 
         Users userAuthenticated = (Users) auth.getPrincipal();
         String token = tokenService.generateToken(userAuthenticated);
@@ -70,6 +71,10 @@ public class AuthService {
         usersRepository.save(newUser);
     }
 
+    @Cacheable(
+            value = "profile",
+            key = "T(org.springframework.security.core.context.SecurityContextHolder).getContext().getAuthentication().getPrincipal().getId()"
+    )
     public UserProfileDTO profile() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
