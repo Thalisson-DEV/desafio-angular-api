@@ -5,6 +5,7 @@ import com.rocketseat.desafioangularapi.dtos.ProductRequestDTO;
 import com.rocketseat.desafioangularapi.dtos.ProductsResponseDTO;
 import com.rocketseat.desafioangularapi.services.ProductsService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,8 +27,8 @@ public class ProductsController {
     }
 
     @GetMapping()
-    public ResponseEntity<ProductsResponseDTO> findAllProducts() {
-        ProductsResponseDTO productsResponseDTO = productsService.findAllProducts();
+    public ResponseEntity<ProductsResponseDTO> findAllProducts(Pageable pageable) {
+        ProductsResponseDTO productsResponseDTO = productsService.findAllProducts(pageable);
         return ResponseEntity.ok(productsResponseDTO);
     }
 

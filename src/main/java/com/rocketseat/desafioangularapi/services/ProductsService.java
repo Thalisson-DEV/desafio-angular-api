@@ -8,10 +8,10 @@ import com.rocketseat.desafioangularapi.exceptions.NoProductsFoundException;
 import com.rocketseat.desafioangularapi.exceptions.ProductNotFoundException;
 import com.rocketseat.desafioangularapi.mappers.ProductMapper;
 import com.rocketseat.desafioangularapi.repositories.ProductsRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 public class ProductsService {
@@ -32,21 +32,17 @@ public class ProductsService {
         return productMapper.toProductDTO(savedProduct);
     }
 
-    public ProductsResponseDTO findAllProducts() {
-        List<Products> products = productsRepository.findAll();
+    public ProductsResponseDTO findAllProducts(Pageable pageable) {
+        Page<Products> products = productsRepository.findAll(pageable);
 
         if (products.isEmpty()) {
             throw new NoProductsFoundException("Nenhum produto encontrado, verifique a base de dados.");
         }
 
-        List<ProductDTO> productDTOs = products.stream()
-                .map(productMapper::toProductDTO)
-                .toList();
+        Page<ProductDTO> productDTOs = products
+                .map(productMapper::toProductDTO);
 
-        return new ProductsResponseDTO(
-                "Produtos listados com sucesso",
-                productDTOs
-        );
+        return productMapper.toProductsResponseDTO(productDTOs, "Produtos listados com sucesso.");
     }
 
     public ProductDTO findProductById(Long id) {

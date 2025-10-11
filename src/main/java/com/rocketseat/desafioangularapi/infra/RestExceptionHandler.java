@@ -1,7 +1,6 @@
 package com.rocketseat.desafioangularapi.infra;
 
 import com.rocketseat.desafioangularapi.exceptions.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
@@ -9,7 +8,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
@@ -26,7 +24,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         );
 
         return new ResponseEntity<>(restExceptionMessage, status);
-    };
+    }
 
 
     @ExceptionHandler(EmailAlreadyExistsException.class)
@@ -101,7 +99,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(NoProductsFoundException.class)
     private ResponseEntity<RestExceptionMessage> noProductsFound(NoProductsFoundException exception) {
-        HttpStatus status = HttpStatus.NO_CONTENT;
+        HttpStatus status = HttpStatus.NOT_FOUND;
 
         RestExceptionMessage restExceptionMessage = new RestExceptionMessage(
                 "/erros/no-products-found",

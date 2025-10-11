@@ -2,8 +2,10 @@ package com.rocketseat.desafioangularapi.mappers;
 
 import com.rocketseat.desafioangularapi.dtos.ProductDTO;
 import com.rocketseat.desafioangularapi.dtos.ProductRequestDTO;
+import com.rocketseat.desafioangularapi.dtos.ProductsResponseDTO;
 import com.rocketseat.desafioangularapi.entitys.ProductStatus;
 import com.rocketseat.desafioangularapi.entitys.Products;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -54,5 +56,20 @@ public class ProductMapper {
         product.setStatus(dto.status());
 
         return product;
+    }
+
+    public ProductsResponseDTO toProductsResponseDTO(Page<ProductDTO> productsPage, String message) {
+        if (productsPage == null) {
+            return null;
+        }
+
+        return new ProductsResponseDTO(
+                message,
+                productsPage.getContent(),
+                productsPage.getNumber(),
+                productsPage.getSize(),
+                productsPage.getTotalElements(),
+                productsPage.getTotalPages()
+        );
     }
 }
