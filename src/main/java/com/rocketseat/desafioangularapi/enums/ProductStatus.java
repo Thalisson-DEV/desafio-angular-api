@@ -1,4 +1,4 @@
-package com.rocketseat.desafioangularapi.entitys;
+package com.rocketseat.desafioangularapi.enums;
 
 public enum ProductStatus {
     VENDIDO,

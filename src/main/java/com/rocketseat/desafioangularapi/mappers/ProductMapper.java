@@ -3,7 +3,7 @@ package com.rocketseat.desafioangularapi.mappers;
 import com.rocketseat.desafioangularapi.dtos.ProductDTO;
 import com.rocketseat.desafioangularapi.dtos.ProductRequestDTO;
 import com.rocketseat.desafioangularapi.dtos.ProductsResponseDTO;
-import com.rocketseat.desafioangularapi.entitys.ProductStatus;
+import com.rocketseat.desafioangularapi.enums.ProductStatus;
 import com.rocketseat.desafioangularapi.entitys.Products;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;

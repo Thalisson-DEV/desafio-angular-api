@@ -1,6 +1,6 @@
 package com.rocketseat.desafioangularapi.dtos;
 
-import com.rocketseat.desafioangularapi.entitys.ProductStatus;
+import com.rocketseat.desafioangularapi.enums.ProductStatus;
 
 public record ProductDTO(
         Long id,

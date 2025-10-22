@@ -1,5 +1,6 @@
 package com.rocketseat.desafioangularapi.entitys;
 
+import com.rocketseat.desafioangularapi.enums.ProductStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
