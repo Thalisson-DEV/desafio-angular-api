@@ -57,7 +57,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(UsernameNotFoundException.class)
     private ResponseEntity<RestExceptionMessage> usernameNotFound(UsernameNotFoundException exception) {
-        HttpStatus status = HttpStatus.BAD_REQUEST;
+        HttpStatus status = HttpStatus.UNAUTHORIZED;
 
         RestExceptionMessage restExceptionMessage = new RestExceptionMessage(
                 "/erros/user-not-found",
