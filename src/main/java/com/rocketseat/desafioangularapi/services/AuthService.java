@@ -86,7 +86,7 @@ public class AuthService {
         );
     }
 
-    public TokenValidationDTO validateToken(String token) {
+    public TokenValidationDTO validateToken(@NotNull(value = "O token não pode estar vazio.") String token) {
         if (token.startsWith("Bearer ")) {
             token = token.substring(7);
         }

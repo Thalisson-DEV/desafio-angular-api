@@ -85,7 +85,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(InvalidTokenException.class)
     private ResponseEntity<RestExceptionMessage> tokenInvalid(InvalidTokenException exception) {
-        HttpStatus status = HttpStatus.BAD_REQUEST;
+        HttpStatus status = HttpStatus.UNAUTHORIZED;
 
         RestExceptionMessage restExceptionMessage = new RestExceptionMessage(
                 "/erros/token-validation-failure",
