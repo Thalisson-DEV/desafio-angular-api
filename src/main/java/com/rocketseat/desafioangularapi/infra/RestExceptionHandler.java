@@ -1,113 +1,89 @@
 package com.rocketseat.desafioangularapi.infra;
 
 import com.rocketseat.desafioangularapi.exceptions.*;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+import java.net.URI;
+import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(ProductNotFoundException.class)
-    private ResponseEntity<RestExceptionMessage> productNotFound(ProductNotFoundException exception) {
-        HttpStatus status = HttpStatus.NOT_FOUND;
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(status, "Dados inválidos.");
+        problemDetail.setType(URI.create("/errors/validation-failed"));
+        problemDetail.setTitle("Erro de validação");
+        
+        String detail = ex.getBindingResult().getFieldErrors().stream()
+                .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                .collect(Collectors.joining(", "));
+        
+        problemDetail.setDetail(detail);
 
-        RestExceptionMessage restExceptionMessage = new RestExceptionMessage(
-                "/errors/product-not-found",
-                "Produto Não Encontrado.",
-                status.value(),
-                exception.getMessage()
-        );
-
-        return new ResponseEntity<>(restExceptionMessage, status);
+        return new ResponseEntity<>(problemDetail, status);
     }
 
+    @ExceptionHandler(ProductNotFoundException.class)
+    public ProblemDetail handleProductNotFound(ProductNotFoundException exception) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, exception.getMessage());
+        problemDetail.setType(URI.create("/errors/product-not-found"));
+        problemDetail.setTitle("Produto Não Encontrado.");
+        return problemDetail;
+    }
 
     @ExceptionHandler(EmailAlreadyExistsException.class)
-    private ResponseEntity<RestExceptionMessage> emailAlreadyExists(EmailAlreadyExistsException exception) {
-        HttpStatus status = HttpStatus.BAD_REQUEST;
-
-        RestExceptionMessage restExceptionMessage = new RestExceptionMessage(
-                "/erros/email-already-exists",
-                "Email já cadastrado.",
-                status.value(),
-                exception.getMessage()
-        );
-
-        return new ResponseEntity<>(restExceptionMessage, status);
+    public ProblemDetail handleEmailAlreadyExists(EmailAlreadyExistsException exception) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, exception.getMessage());
+        problemDetail.setType(URI.create("/errors/email-already-exists"));
+        problemDetail.setTitle("Email já cadastrado.");
+        return problemDetail;
     }
 
     @ExceptionHandler(TokenGenerationException.class)
-    private ResponseEntity<RestExceptionMessage> tokenGeneration(TokenGenerationException exception) {
-        HttpStatus status = HttpStatus.BAD_GATEWAY;
-
-        RestExceptionMessage restExceptionMessage = new RestExceptionMessage(
-                "/erros/token-generation-failure",
-                "Erro ao gerar token.",
-                status.value(),
-                exception.getMessage()
-        );
-
-        return new ResponseEntity<>(restExceptionMessage, status);
+    public ProblemDetail handleTokenGeneration(TokenGenerationException exception) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_GATEWAY, exception.getMessage());
+        problemDetail.setType(URI.create("/errors/token-generation-failure"));
+        problemDetail.setTitle("Erro ao gerar token.");
+        return problemDetail;
     }
 
     @ExceptionHandler(UsernameNotFoundException.class)
-    private ResponseEntity<RestExceptionMessage> usernameNotFound(UsernameNotFoundException exception) {
-        HttpStatus status = HttpStatus.UNAUTHORIZED;
-
-        RestExceptionMessage restExceptionMessage = new RestExceptionMessage(
-                "/erros/user-not-found",
-                "Usuario não cadastrado",
-                status.value(),
-                exception.getMessage()
-        );
-
-        return new ResponseEntity<>(restExceptionMessage, status);
+    public ProblemDetail handleUsernameNotFound(UsernameNotFoundException exception) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, exception.getMessage());
+        problemDetail.setType(URI.create("/errors/user-not-found"));
+        problemDetail.setTitle("Usuario não cadastrado");
+        return problemDetail;
     }
 
     @ExceptionHandler(InternalAuthenticationServiceException.class)
-    private ResponseEntity<RestExceptionMessage> internalAuthenticationServiceException(InternalAuthenticationServiceException exception) {
-        HttpStatus status = HttpStatus.BAD_REQUEST;
-
-        RestExceptionMessage restExceptionMessage = new RestExceptionMessage(
-                "/erros/internal-authentication-error",
-                "Erro ao autenticar.",
-                status.value(),
-                exception.getMessage()
-        );
-
-        return new ResponseEntity<>(restExceptionMessage, status);
+    public ProblemDetail handleInternalAuth(InternalAuthenticationServiceException exception) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, exception.getMessage());
+        problemDetail.setType(URI.create("/errors/internal-authentication-error"));
+        problemDetail.setTitle("Erro ao autenticar.");
+        return problemDetail;
     }
 
     @ExceptionHandler(InvalidTokenException.class)
-    private ResponseEntity<RestExceptionMessage> tokenInvalid(InvalidTokenException exception) {
-        HttpStatus status = HttpStatus.FORBIDDEN;
-
-        RestExceptionMessage restExceptionMessage = new RestExceptionMessage(
-                "/erros/token-validation-failure",
-                "Token invalido.",
-                status.value(),
-                exception.getMessage()
-        );
-
-        return new ResponseEntity<>(restExceptionMessage, status);
+    public ProblemDetail handleInvalidToken(InvalidTokenException exception) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, exception.getMessage());
+        problemDetail.setType(URI.create("/errors/token-validation-failure"));
+        problemDetail.setTitle("Token invalido.");
+        return problemDetail;
     }
 
     @ExceptionHandler(NoProductsFoundException.class)
-    private ResponseEntity<RestExceptionMessage> noProductsFound(NoProductsFoundException exception) {
-        HttpStatus status = HttpStatus.NOT_FOUND;
-
-        RestExceptionMessage restExceptionMessage = new RestExceptionMessage(
-                "/erros/no-products-found",
-                "Nenhum produto encontrado.",
-                status.value(),
-                exception.getMessage()
-        );
-
-        return new ResponseEntity<>(restExceptionMessage, status);
+    public ProblemDetail handleNoProductsFound(NoProductsFoundException exception) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, exception.getMessage());
+        problemDetail.setType(URI.create("/errors/no-products-found"));
+        problemDetail.setTitle("Nenhum produto encontrado.");
+        return problemDetail;
     }
 }

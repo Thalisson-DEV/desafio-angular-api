@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/v1/auth")
-public class AuthController {
+public class AuthController implements AuthControllerDocs {
 
     private final AuthService authService;
 
@@ -17,24 +17,28 @@ public class AuthController {
         this.authService = authService;
     }
 
+    @Override
     @PostMapping("/login")
     public ResponseEntity<LoginSucessfullDTO> login(@RequestBody @Valid AuthRequestDTO authRequest) {
         LoginSucessfullDTO loginSucessfullDTO = authService.login(authRequest);
         return ResponseEntity.ok(loginSucessfullDTO);
     }
 
+    @Override
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody @Valid RegisterRequestDTO registerRequest) {
         authService.register(registerRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body("Registro realizado com sucesso");
     }
 
+    @Override
     @PostMapping("/user/profile")
     public ResponseEntity<UserProfileDTO> userProfile() {
         UserProfileDTO userProfileDTO = authService.profile();
         return ResponseEntity.ok(userProfileDTO);
     }
 
+    @Override
     @GetMapping("/protected")
     public ResponseEntity<TokenValidationDTO> validarToken(@RequestHeader("Authorization") String token) {
         TokenValidationDTO valido = authService.validateToken(token);

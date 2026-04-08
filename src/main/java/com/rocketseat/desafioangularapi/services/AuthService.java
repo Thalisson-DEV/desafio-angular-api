@@ -8,6 +8,7 @@ import com.rocketseat.desafioangularapi.exceptions.EmailAlreadyExistsException;
 import com.rocketseat.desafioangularapi.exceptions.InvalidTokenException;
 import com.rocketseat.desafioangularapi.mappers.UserMapper;
 import com.rocketseat.desafioangularapi.repositories.UsersRepository;
+import jakarta.validation.Valid;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -33,7 +34,7 @@ public class AuthService {
         this.userMapper = userMapper;
     }
 
-    public LoginSucessfullDTO login(@NotNull AuthRequestDTO authRequest) {
+    public LoginSucessfullDTO login(@NotNull @Valid AuthRequestDTO authRequest) {
         if (!usersRepository.existsByEmail(authRequest.email())) {
             throw new UsernameNotFoundException("O email " + authRequest.email() + " não possui cadastro");
         }
@@ -60,7 +61,7 @@ public class AuthService {
         );
     }
 
-    public void register(@NotNull RegisterRequestDTO registerRequest) {
+    public void register(@NotNull @Valid RegisterRequestDTO registerRequest) {
         if (usersRepository.findByEmail(registerRequest.email()) != null) {
             throw new EmailAlreadyExistsException("O email já esta cadastrado");
         }

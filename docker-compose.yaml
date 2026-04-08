@@ -16,7 +16,7 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_PASSWORD: paodepovilho2003
+      POSTGRES_PASSWORD: desafiosipel2026
       POSTGRES_USER: postgres
       POSTGRES_DB: desafio-angular-api
     networks:

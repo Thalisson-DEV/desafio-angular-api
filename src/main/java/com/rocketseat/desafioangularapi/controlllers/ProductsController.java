@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/v1/products")
-public class ProductsController {
+public class ProductsController implements ProductsControllerDocs {
 
     private final ProductsService productsService;
 
@@ -19,31 +19,35 @@ public class ProductsController {
         this.productsService = productsService;
     }
 
-
+    @Override
     @PostMapping("/new-product")
     public ResponseEntity<ProductDTO> saveProduct(@RequestBody @Valid ProductRequestDTO productRequest) {
         ProductDTO productDTO = productsService.saveProduct(productRequest);
         return ResponseEntity.ok(productDTO);
     }
 
+    @Override
     @GetMapping()
     public ResponseEntity<ProductsResponseDTO> findAllProducts(Pageable pageable) {
         ProductsResponseDTO productsResponseDTO = productsService.findAllProducts(pageable);
         return ResponseEntity.ok(productsResponseDTO);
     }
 
+    @Override
     @GetMapping("/{id}")
     public ResponseEntity<ProductDTO> findProductById(@PathVariable Long id) {
         ProductDTO productDTO = productsService.findProductById(id);
         return ResponseEntity.ok(productDTO);
     }
 
+    @Override
     @PutMapping("/{id}")
     public ResponseEntity<ProductDTO> updateProduct(@PathVariable Long id, @RequestBody @Valid ProductRequestDTO productRequest) {
         ProductDTO productDTO = productsService.updateProduct(id, productRequest);
         return ResponseEntity.ok(productDTO);
     }
 
+    @Override
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
         productsService.deleteProduct(id);
